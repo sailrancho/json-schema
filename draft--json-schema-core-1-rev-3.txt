@@ -1,0 +1,672 @@
+
+
+
+Internet Engineering Task Force                            fge. Galiegue
+Internet-Draft                                        September 26, 2012
+Intended status: Informational
+Expires: March 30, 2013
+
+
+               JSON Schema: core definitions and purposes
+                            json-schema-core
+
+Abstract
+
+   JSON Schema defines the media type "application/schema+json", a JSON
+   based format for defining the structure of JSON data.  JSON Schema
+   provides a contract for what JSON data is required for a given
+   application and how to interact with it.  JSON Schema is intended to
+   define validation, documentation, hyperlink navigation, and
+   interaction control of JSON data.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on March 30, 2013.
+
+Copyright Notice
+
+   Copyright (c) 2012 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+
+
+
+Galiegue                 Expires March 30, 2013                 [Page 1]
+
+Internet-Draft                 JSON Schema                September 2012
+
+
+   described in the Simplified BSD License.
+
+Table of Contents
+
+   1.  Introduction . . . . . . . . . . . . . . . . . . . . . . . . .  3
+   2.  Conventions and Terminology  . . . . . . . . . . . . . . . . .  3
+   3.  Core terminology of JSON Schema  . . . . . . . . . . . . . . .  3
+     3.1.  JSON Schema, keywords  . . . . . . . . . . . . . . . . . .  3
+     3.2.  Root schema, subschema . . . . . . . . . . . . . . . . . .  3
+     3.3.  JSON Schema primitive types  . . . . . . . . . . . . . . .  4
+     3.4.  JSON value equality  . . . . . . . . . . . . . . . . . . .  4
+     3.5.  Instance . . . . . . . . . . . . . . . . . . . . . . . . .  5
+   4.  Overview . . . . . . . . . . . . . . . . . . . . . . . . . . .  5
+     4.1.  Instance validation  . . . . . . . . . . . . . . . . . . .  5
+     4.2.  Hypermedia and linking . . . . . . . . . . . . . . . . . .  5
+   5.  General considerations . . . . . . . . . . . . . . . . . . . .  5
+     5.1.  Valid instances  . . . . . . . . . . . . . . . . . . . . .  5
+     5.2.  Protocol and programming language independence . . . . . .  6
+     5.3.  Integer numeric instances  . . . . . . . . . . . . . . . .  6
+     5.4.  JSON Schema extension  . . . . . . . . . . . . . . . . . .  6
+     5.5.  Security considerations  . . . . . . . . . . . . . . . . .  6
+   6.  The "$schema" keyword  . . . . . . . . . . . . . . . . . . . .  6
+     6.1.  Purpose  . . . . . . . . . . . . . . . . . . . . . . . . .  6
+     6.2.  Valid values . . . . . . . . . . . . . . . . . . . . . . .  7
+     6.3.  Usage  . . . . . . . . . . . . . . . . . . . . . . . . . .  7
+   7.  Schema addressing  . . . . . . . . . . . . . . . . . . . . . .  7
+     7.1.  Addressing mechanisms  . . . . . . . . . . . . . . . . . .  7
+     7.2.  URI of a root schema . . . . . . . . . . . . . . . . . . .  7
+     7.3.  Canonical addressing . . . . . . . . . . . . . . . . . . .  8
+     7.4.  Inline addressing  . . . . . . . . . . . . . . . . . . . .  8
+       7.4.1.  JSON Reference extension . . . . . . . . . . . . . . .  9
+     7.5.  Security considerations  . . . . . . . . . . . . . . . . .  9
+   8.  Schema/Instance Association  . . . . . . . . . . . . . . . . .  9
+     8.1.  Purpose of this section  . . . . . . . . . . . . . . . . .  9
+     8.2.  Recommended correlation mechanisms for use with the
+           HTTP protocol  . . . . . . . . . . . . . . . . . . . . . . 10
+       8.2.1.  Correlation by means of the "Content-Type" header  . . 10
+       8.2.2.  Correlation by means of the "Link" header  . . . . . . 10
+   9.  IANA Considerations  . . . . . . . . . . . . . . . . . . . . . 11
+   10. References . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+     10.1. Normative References . . . . . . . . . . . . . . . . . . . 11
+     10.2. Informative References . . . . . . . . . . . . . . . . . . 11
+   Appendix A.  ChangeLog . . . . . . . . . . . . . . . . . . . . . . 11
+
+
+
+
+
+
+
+
+Galiegue                 Expires March 30, 2013                 [Page 2]
+
+Internet-Draft                 JSON Schema                September 2012
+
+
+1.  Introduction
+
+   JSON Schema is a JSON media type for defining the structure of JSON
+   data.  JSON Schema provides a contract for what JSON data is required
+   for a given application and how to interact with it.  JSON Schema is
+   intended to define validation, documentation, hyperlink navigation,
+   and interaction control of JSON data.
+
+   This document defines the core terminology used by JSON Schema.
+   Other linked specifications, which expand on a particular role of
+   JSON Schema, will use that terminology.  This document also defines
+   the mechanisms used for JSON Schema identification and addressing.
+
+2.  Conventions and Terminology
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in RFC 2119 [RFC2119].
+
+   The terms "JSON", "JSON text", "JSON value", "member", "element",
+   "object", "array", "number", "string", "boolean", "true", "false",
+   and "null" in this document are to be interpreted as defined in RFC
+   4627 [RFC4627].
+
+3.  Core terminology of JSON Schema
+
+3.1.  JSON Schema, keywords
+
+   A JSON Schema is a JSON document, and that document MUST be an
+   object.  Object members of a JSON Schema are called keywords, or
+   schema keywords.
+
+   A JSON Schema MAY be empty.
+
+3.2.  Root schema, subschema
+
+   JSON Schemas can be nested, as in this example:
+
+
+   {
+       "title": "root",
+       "otherschema": {
+           "title": "nested",
+           "anotherschema": {
+               "title": "alsonested"
+           }
+       }
+   }
+
+
+
+Galiegue                 Expires March 30, 2013                 [Page 3]
+
+Internet-Draft                 JSON Schema                September 2012
+
+
+   In this example, "nested" and "alsonested" are subschemas, and "root"
+   is a root schema.
+
+3.3.  JSON Schema primitive types
+
+   JSON Schema defines seven primitive types for JSON values:
+
+   array  A JSON array.
+
+   boolean  A JSON boolean.
+
+   integer  A JSON number without a fraction or exponent part (see RFC
+      4627, section 2.4) [RFC4627].
+
+   number  Any JSON number.  Number includes integer.
+
+   null  The JSON null value.
+
+   object  A JSON object.
+
+   string  A JSON string.
+
+3.4.  JSON value equality
+
+   Two JSON values are said to be equal if and only if:
+
+      both are nulls; or
+
+      both are booleans, and have the same value; or
+
+      both are strings, and have the same value; or
+
+      both are integers, and have the same value; or
+
+      both are numbers, and have the same value; or
+
+      both are arrays, and:
+
+         have the same number of elements; and
+
+         elements at the same index are equal according to this
+         definition; or
+
+      both are objects, and:
+
+         have the same set of members; and
+
+
+
+
+
+Galiegue                 Expires March 30, 2013                 [Page 4]
+
+Internet-Draft                 JSON Schema                September 2012
+
+
+         values for a same member are equal according to this
+         definition.
+
+3.5.  Instance
+
+   An instance is any JSON value being processed by a JSON Schema.  The
+   specification may also refer to an instance as a JSON instance.
+
+4.  Overview
+
+   JSON Schema defines the media type "application/schema+json" for
+   describing the structure of JSON instances.  JSON Schemas are
+   themselves written in JSON and include facilities for describing the
+   structure of JSON in terms of allowable values, descriptions, and
+   interpreting relations with other resources.
+
+   JSON Schema serves different purposes, which are summarized below.
+   Each purpose has a defined set of keywords which is described in its
+   own specification.
+
+4.1.  Instance validation
+
+   JSON Schema allows applications to validate any JSON instance, either
+   non interactively or interactively.  For instance, an application may
+   use an external service to collect JSON instances and check that
+   these collected instances match its requirements against a given
+   schema; another application may use a schema to build an interactve
+   interface in order to collect user input, and check the correctness
+   of said input.
+
+4.2.  Hypermedia and linking
+
+   JSON Schema provides a method for defining link relations from
+   instances to other resources, as well as describing interpretations
+   of instances as multimedia data.  This allows JSON data to be
+   interpreted as rich hypermedia documents, placed in the context of a
+   larger set of related resources.
+
+5.  General considerations
+
+5.1.  Valid instances
+
+   It is acknowledged that a JSON instance may be any valid JSON value
+   as defined by [RFC4627].  As such, JSON Schema does not mandate that
+   an instance be of a particular type: JSON Schema can process any JSON
+   value, including null.  It is the domain of JSON Schema validation to
+   add useful constraints to the structure and, optionally, semantics,
+   of the JSON instance being processed.
+
+
+
+Galiegue                 Expires March 30, 2013                 [Page 5]
+
+Internet-Draft                 JSON Schema                September 2012
+
+
+5.2.  Protocol and programming language independence
+
+   JSON Schema is agnostic with regards to both protocols and
+   programming languages.  In particular, the semantics of the client-
+   server interface is dependent on the protocol being used.  This
+   specification nevertheless suggests mechanisms to correlate an
+   instance to a schema over HTTP, which is the dominant protocol used
+   for Internet-enabled interactive applications.
+
+5.3.  Integer numeric instances
+
+   It is acknowledged by this specification that programming language
+   support for numeric types vary.  In particular, some programming
+   languages, and their associated parsers, yield different internal
+   representations for floating point numbers and integers, while others
+   do not.
+
+   As a consequence, for interoperability reasons, schema authors and
+   instance producers SHOULD ensure that integer numeric values be
+   written using their canonical mathematical representation.
+
+5.4.  JSON Schema extension
+
+   Implementations MAY choose to define additional keywords to JSON
+   Schema.  Save for explicit agreement, schema authors SHALL NOT expect
+   these additional keywords to be supported by peer implementations.
+   Implementations SHOULD ignore keywords they do not support.
+
+5.5.  Security considerations
+
+   Both schemas and instances are JSON values.  As such, all security
+   considerations defined in [RFC4627] apply.
+
+   JSON Schema does not define an internal security mechanism.  It is up
+   to applications to determine the level of trust placed into JSON data
+   coming from external sources (whether this data be an instance or a
+   schema), using any mechanism at their disposal.
+
+6.  The "$schema" keyword
+
+6.1.  Purpose
+
+   The "$schema" keyword plays two roles in JSON Schema:
+
+      it defines the version of the schema which a particular JSON
+      Schema is valid against;
+
+
+
+
+
+Galiegue                 Expires March 30, 2013                 [Page 6]
+
+Internet-Draft                 JSON Schema                September 2012
+
+
+      it is a URI which is a location to a JSON Schema which validates
+      any schema written for this version.
+
+   Any of these schemas also validate themselves successfully.
+
+6.2.  Valid values
+
+   The value of this keyword MUST be one of the following string values:
+
+      "http://json-schema.org/draft-03/schema#" (core JSON Schema
+      written against JSON Schema, draft v3 [json-schema-03]);
+
+      "http://json-schema.org/draft-03/hyper-schema#" (JSON Schema
+      hyperschema written against JSON Schema, draft v3
+      [json-schema-03]);
+
+      "http://json-schema.org/current/schema-core.json#" (schema written
+      against the current version of the specification -- this one).
+
+6.3.  Usage
+
+   It is RECOMMENDED that schema authors include this keyword in their
+   schemas.  This keyword MUST be located at the root of a schema.
+
+   It is RECOMMENDED that implementations not supporting a particular
+   schema version fail JSON Schema processing.
+
+7.  Schema addressing
+
+7.1.  Addressing mechanisms
+
+   JSON Schema addressing is done using URIs [RFC3986].  Two addressing
+   mechanisms are defined: canonical addressing and inline addressing.
+   Implementations MUST support canonical addressing, and MAY support
+   inline addressing.
+
+   Inline addressing is done by the means of the "id" keyword.  The
+   value of this keyword MUST be a string; this string MUST be a valid
+   URI, and SHOULD be normalized.
+
+7.2.  URI of a root schema
+
+   When a schema is loaded via a URI, the loading URI SHALL be
+   considered to be the URI for this schema.  If a schema is loaded
+   without a URI:
+
+      if "id" is present in the root schema, its value MAY be considered
+      to be the schema URI;
+
+
+
+Galiegue                 Expires March 30, 2013                 [Page 7]
+
+Internet-Draft                 JSON Schema                September 2012
+
+
+      otherwise, it is RECOMMENDED that implementations consider that
+      the URI of the schema is either the empty URI, or a URN.
+
+7.3.  Canonical addressing
+
+   Canonical addressing in JSON Schema is done using JSON Reference
+   [json-reference].  JSON References, when encountered, MUST be
+   resolved against the URI of the current root schema.
+
+7.4.  Inline addressing
+
+   When "id" is encountered in a subschema, implementations MAY resolve
+   this URI against the URI of a root schema, and consider that the
+   canonical URI of this subschema is the calculated URI.  This is
+   called inline addressing.
+
+   There SHOULD NOT be two identical "id" values in the same root schema
+   which resolve to the same URI.  If this is the case, subschema lookup
+   using inline addressing is undefined.
+
+   This schema will be taken as an example:
+
+
+   {
+       "id": "http://x.y.z/rootschema.json#",
+       "schema1": {
+           "id": "#foo"
+       },
+       "schema2": {
+           "id": "otherschema.json",
+           "nested": {
+               "id": "#bar"
+           },
+           "alsonested": {
+               "id": "t/inner.json#a"
+           }
+       },
+       "schema3": {
+           "id": "some://where.else/completely#"
+       }
+   }
+
+
+   Subschemas at the following URI-encoded JSON Pointer [json-pointer]s
+   (starting from the root schema) have the following URIs:
+
+
+
+
+
+
+Galiegue                 Expires March 30, 2013                 [Page 8]
+
+Internet-Draft                 JSON Schema                September 2012
+
+
+   # (document root)  http://x.y.z/rootschema.json#
+
+   #/schema1  http://x.y.z/rootschema.json#foo
+
+   #/schema2  http://x.y.z/otherschema.json#
+
+   #/schema2/nested  http://x.y.z/rootschema.json#bar
+
+   #/schema2/alsonested  http://x.y.z/t/inner.json#a
+
+   #/schema3  some://where.else/completely#
+
+7.4.1.  JSON Reference extension
+
+   The JSON Reference specification mandates that the fragment part of a
+   reference, if any, be a JSON Pointer.  However, this would prevent
+   some of the URIs in the example above from being addressable.  Schema
+   authors MAY use an extended form of a JSON Reference for inline
+   addressing, such as in this example:
+
+
+   {
+       "$ref": "http://x.y.z/t/inner.json#a
+   }
+
+
+   An implementation choosing to support inline addressing SHOULD
+   support this extension to JSON Reference.
+
+7.5.  Security considerations
+
+   Inline addressing can produce canonical URIs which differ from the
+   canonical URI of the root schema.  Implementations MAY choose, for
+   security reasons, to ignore inline addressing in such a situation,
+   and fall back to canonical addressing.
+
+   Dereferencing URIs MAY fail to complete, or MAY procude content which
+   is not a JSON Schema (another type of JSON value, or not a JSON
+   value).  It is RECOMMENDED that JSON Schema processing be considered
+   a failure in such a situation.
+
+8.  Schema/Instance Association
+
+8.1.  Purpose of this section
+
+   A JSON instance MAY be correlated to one, or even several, JSON
+   Schemas.  This correlation MAY be embodied within existing protocol
+   headers.
+
+
+
+Galiegue                 Expires March 30, 2013                 [Page 9]
+
+Internet-Draft                 JSON Schema                September 2012
+
+
+   In addition, if the protocol also carries media type information (by
+   means, for instance, of a "Content-Type" header), an instance MUST be
+   one of "application/json" or any other subtype.
+
+   Should the scenario above be inapplicable, due either to the absence
+   of, or restrictions on, protocol headers, such a correlation is out
+   of the normative scope of this specification.
+
+8.2.  Recommended correlation mechanisms for use with the HTTP protocol
+
+   It is acknowledged by this specification that the majority of
+   interactive JSON Schema processing will be over HTTP.  This section
+   therefore gives recommendations for materializing an instance/schema
+   correlation using mechanisms currently available for this protocol.
+
+8.2.1.  Correlation by means of the "Content-Type" header
+
+   It is RECOMMENDED that a MIME type parameter by the name of "profile"
+   be appended to the "Content-Type" header of the instance being
+   processed.  If present, the value of this parameter MUST be a valid
+   URI, and this URI SHOULD resolve to a valid JSON Schema.
+
+   An example of such a header would be:
+
+
+   Content-Type: application/my-media-type+json;
+                 profile=http://example.com/my-hyper-schema
+
+
+8.2.2.  Correlation by means of the "Link" header
+
+   When using the "Link" header, it is RECOMMENDED that a relationship
+   by the name "describedBy" be used, as defined by RFC 2048, section
+   19.6.2.4 [RFC2048].  Note: it should be remembered that relationship
+   values are case insensitive, so "describedBy" is just as valid a
+   relationship as "DESCRIBEDBY".
+
+   The target URI of the "Link" header SHOULD be a valid JSON Schema.
+
+   An example of such a header would be:
+
+
+   Link: <http://example.com/my-hyper-schema>; rel="describedBy"
+
+
+
+
+
+
+
+
+Galiegue                 Expires March 30, 2013                [Page 10]
+
+Internet-Draft                 JSON Schema                September 2012
+
+
+9.  IANA Considerations
+
+   The proposed MIME media type for JSON Schema is defined as follows:
+
+      type name: application;
+
+      subtype name: schema+json.
+
+10.  References
+
+10.1.  Normative References
+
+   [RFC2119]         Bradner, S., "Key words for use in RFCs to Indicate
+                     Requirement Levels", BCP 14, RFC 2119, March 1997.
+
+10.2.  Informative References
+
+   [RFC2048]         Freed, N., Klensin, J., and J. Postel,
+                     "Multipurpose Internet Mail Extensions (MIME) Part
+                     Four: Registration Procedures", BCP 13, RFC 2048,
+                     November 1996.
+
+   [RFC4627]         Crockford, D., "The application/json Media Type for
+                     JavaScript Object Notation (JSON)", RFC 4627,
+                     July 2006.
+
+   [RFC3986]         Berners-Lee, T., Fielding, R., and L. Masinter,
+                     "Uniform Resource Identifier (URI): Generic
+                     Syntax", STD 66, RFC 3986, January 2005.
+
+   [json-reference]  Bryan, P. and K. Zyp, "JSON Reference",
+                     September 2012, <http://tools.ietf.org/html/
+                     draft-pbryan-zyp-json-ref-03>.
+
+   [json-pointer]    Bryan, P. and K. Zyp, "JSON Pointer",
+                     September 2012, <http://tools.ietf.org/html/
+                     draft-ietf-appsawg-json-pointer-04>.
+
+   [json-schema-03]  Court, G. and K. Zyp, "JSON Schema, draft 3",
+                     September 2012, <http://tools.ietf.org/html/
+                     draft-zyp-json-schema-03>.
+
+Appendix A.  ChangeLog
+
+   TODO
+
+
+
+
+
+
+Galiegue                 Expires March 30, 2013                [Page 11]
+
+Internet-Draft                 JSON Schema                September 2012
+
+
+Author's Address
+
+   Francis Galiegue
+
+   EMail: fgaliegue@gmail.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Galiegue                 Expires March 30, 2013                [Page 12]
+
