@@ -1,34 +1,32 @@
 ## Welcome to JSON Schema
 
-This repository contains the current, and historical, JSON Schema
-specifications, along wit a CommonJS implementation (authored by Kris Zyp, one
-of the initiators of JSON Schema).
+This repository contains the current (draft v4) and historical JSON Schema
+specifications.
 
-## Call for reviews
+## Draft v4 is now the official specification
 
-Specifications are starting to get written. Reviews, comments and suggestions
-are of paramount importance to JSON Schema. It is humbly asked to you, dear
-reader, that you bring your contribution.
+Links:
 
-Proposed specifications are here:
+* <a href="http://tools.ietf.org/html/draft-zyp-json-schema-04">core specification</a>;
+* <a href="http://tools.ietf.org/html/draft-fge-json-schema-validation-00">validation specification</a>;
+* <a href="http://tools.ietf.org/html/draft-luff-json-hyper-schema-00">hyperschema specification</a>.
 
-https://github.com/json-schema/json-schema/tree/next/proposals
-
-Pull requests _will_ be considered.
+Reviews welcome.
 
 ## The wiki
  
-The <a href="https://github.com/json-schema/json-schema/wiki">wiki</a> contains
-a detailed description of JSON Schema, and discussion about the next version of
-the specification.
+The <a href="https://github.com/json-schema/json-schema/wiki">wiki</a> is
+currently out of date. It contains a detailed description of all keywords in the
+previous draft for reference.
+
+Pull requests to bring it up to date will be considered.
 
 ## The website
 
-The JSON Schema web site is at http://json-schema.org
+JSON Schema has a <a href="http://json-schema.org">web site</a>.
 
-Note that the content of the aforementioned web site is available from this
-repository (branch <tt>gh-pages</tt>). Pull requests to improve the content of
-the site will be considered.
+The content of this web site is available from this repository (branch
+<tt>gh-pages</tt>). Pull requests to improve the content of the site are welcome.
 
 ## License
 
