@@ -1,8 +1,8 @@
 {
-    "id": "http://json-schema.org/draft-04/schema#",
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Core schema meta-schema",
-    "definitions": {
+    "id": "http://json-schema.org/draft-04/schema#",      // draft-04定义了一个 schema 本身应该有的属性
+    "$schema": "http://json-schema.org/draft-04/schema#", // draft-04本身也遵循draft-04定义本身 
+    "description": "Core schema meta-schema",  // 描述
+    "definitions": {   // 定义
         "schemaArray": {
             "type": "array",
             "minItems": 1,
@@ -25,8 +25,8 @@
             "uniqueItems": true
         }
     },
-    "type": "object",
-    "properties": {
+    "type": "object",   
+    "properties": { //  draft-04 schema可以/需要拥有的属性
         "id": {
             "type": "string",
             "format": "uri"
@@ -102,7 +102,7 @@
             "additionalProperties": { "$ref": "#" },
             "default": {}
         },
-        "properties": {
+        "properties": {   // 这里很有意思 这个draft-04 在他的属性中说明了 任何一个draft-04 json 都可以有一个properites属性
             "type": "object",
             "additionalProperties": { "$ref": "#" },
             "default": {}
