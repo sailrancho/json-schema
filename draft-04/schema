@@ -1,8 +1,8 @@
 {
-    "id": "http://json-schema.org/draft-04/schema#",
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Core schema meta-schema",
-    "definitions": {
+    "id": "http://json-schema.org/draft-04/schema#",    // schema对应的url定义地址  一个定义schema的schema
+    "$schema": "http://json-schema.org/draft-04/schema#", // 标准地址
+    "description": "Core schema meta-schema",   //  描述
+    "definitions": {        // 自定义类型  在同一个schema内可以用 $ref #直接引用
         "schemaArray": {
             "type": "array",
             "minItems": 1,
@@ -25,8 +25,8 @@
             "uniqueItems": true
         }
     },
-    "type": "object",
-    "properties": {
+    "type": "object",    // draft-04本身的类型
+    "properties": {      // draft-04的属性
         "id": {
             "type": "string",
             "format": "uri"
