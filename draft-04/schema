@@ -26,7 +26,7 @@
         }
     },
     "type": "object",   
-    "properties": { //  draft-04 schema可以/需要拥有的属性
+    "properties": { //  draft-04 schema可以/需要拥有的属性/字段
         "id": {
             "type": "string",
             "format": "uri"
@@ -126,7 +126,7 @@
             "minItems": 1,
             "uniqueItems": true
         },
-        "type": {
+        "type": {   // 这里指出了type的类型,验证需从这里入手
             "anyOf": [
                 { "$ref": "#/definitions/simpleTypes" },
                 {
